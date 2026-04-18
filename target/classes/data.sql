@@ -5,4 +5,4 @@ VALUES
 
 
 
-select * FROM person;
+select * FROM recipe;

@@ -1,4 +1,4 @@
-package com.PerfectPantry.PerfectPantry.database
+package com.PerfectPantry.PerfectPantry.database.person
 
 import com.PerfectPantry.PerfectPantry.model.Person
 import org.springframework.jdbc.core.RowMapper

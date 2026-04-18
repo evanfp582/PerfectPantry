@@ -1,34 +1,35 @@
 package com.PerfectPantry.PerfectPantry.controllers
 
-import com.PerfectPantry.PerfectPantry.database.DbService
+import com.PerfectPantry.PerfectPantry.database.person.PersonRepository
 import com.PerfectPantry.PerfectPantry.model.NewPerson
 import com.PerfectPantry.PerfectPantry.model.Person
 import com.PerfectPantry.PerfectPantry.model.Persons
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RestController("/v1")
+@RestController
+@RequestMapping("/v1/persons")
 class PersonController(
-    private val dbService: DbService
+    private val personRepository: PersonRepository
 ) {
-    @GetMapping("/v1/persons")
+
     fun listPersons(): ResponseEntity<Persons> {
-        return ResponseEntity.ok(Persons(dbService.getPersonsFromDb()))
+        return ResponseEntity.ok(Persons(personRepository.getPersonsFromDb()))
     }
 
-    @GetMapping("/v1/persons/{id}")
+    @GetMapping("/{id}")
     fun getPerson(
         @PathVariable
         id: Int
     ): ResponseEntity<Person> {
-        val potentiallyExistingPerson = dbService.getPerson(id)
+        val potentiallyExistingPerson = personRepository.getPerson(id)
         return if (potentiallyExistingPerson.isPresent) {
             ResponseEntity.ok(potentiallyExistingPerson.get())
         } else {
@@ -36,23 +37,23 @@ class PersonController(
         }
     }
 
-    @PostMapping("/v1/persons")
+    @PostMapping
     fun createPerson(@RequestBody person: NewPerson): ResponseEntity<Person> {
-        val createdPerson = dbService.createPerson(person)
+        val createdPerson = personRepository.createPerson(person)
         return ResponseEntity.ok().body(createdPerson)
     }
 
-    @DeleteMapping("/v1/persons/{id}")
+    @DeleteMapping("/{id}")
     fun deletePerson(
         @PathVariable id: Int
     ) {
-        dbService.deletePerson(id)
+        personRepository.deletePerson(id)
     }
 
-    @PutMapping("/v1/persons")
+    @PutMapping
     fun updatePerson(
         @RequestBody person: Person
-    ): ResponseEntity<Person> = ResponseEntity.ok(dbService.updatePerson(person))
+    ): ResponseEntity<Person> = ResponseEntity.ok(personRepository.updatePerson(person))
 
 //    @PatchMapping("/v1/persons/{id}")
 //    fun updatePerson(@PathVariable id: Int, @RequestBody updatedFields: Map<String, Any?>): ResponseEntity<Person> {
