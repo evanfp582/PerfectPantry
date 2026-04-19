@@ -8,11 +8,11 @@ data class Ingredient(
     val id: Int,
     val name: String,
     val description: String,
-    val cost: Float
+    val cost: Float?
 )
 
 data class NewIngredient(
     val name: String,
     val description: String,
-    val cost: Float
+    val cost: Float?
 )

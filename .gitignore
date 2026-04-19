@@ -1,3 +1,7 @@
+# Evan's additions
+.idea
+.mvn
+
 # Compiled class file
 *.class
 

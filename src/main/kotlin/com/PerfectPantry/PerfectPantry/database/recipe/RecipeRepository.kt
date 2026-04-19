@@ -30,7 +30,10 @@ class RecipeRepository(
     fun createRecipe(recipe: NewRecipe): Recipe? {
         val keyHolder: KeyHolder = GeneratedKeyHolder()
         val update =
-            jdbcClient.sql("INSERT INTO RECIPE(NAME, INSTRUCTION, DESCRIPTION, TIME, YIELD, SOURCE, URL) VALUES (?, ?, ?, ?, ?, ?, ?)")
+            jdbcClient.sql("""
+                INSERT INTO RECIPE(NAME, INSTRUCTION, DESCRIPTION, TIME, YIELD, SOURCE, URL) 
+                VALUES (:name, :instruction, :description, :time, :yield, :source, :url)
+            """.trimIndent())
                 .param("name", recipe.name)
                 .param("instruction", recipe.instruction)
                 .param("description", recipe.description)
@@ -41,7 +44,8 @@ class RecipeRepository(
                 .update(keyHolder)
 
         if (update == 1) {
-            val potentiallyCreatedRecipe = getRecipe(keyHolder.getKeyAs(Integer::class.java)?.toInt()!!)
+            val potentiallyCreatedRecipe = getRecipe(keyHolder.keys?.get("id") as? Int ?:
+                throw RuntimeException("Failed to retrieve generated ID"))
 
             return if (potentiallyCreatedRecipe.isPresent) {
                 potentiallyCreatedRecipe.get()
@@ -73,7 +77,17 @@ class RecipeRepository(
 
     fun updateRecipe(recipe: Recipe): Recipe {
         val update = try {
-            jdbcClient.sql("UPDATE RECIPE SET NAME = ?, INSTRUCTION = ?, DESCRIPTION = ?, TIME = ?, YIELD = ?, SOURCE = ?, URL = ? WHERE ID = ?")
+            jdbcClient.sql("""
+                    UPDATE RECIPE 
+                    SET name = :name, 
+                        instruction = :instruction, 
+                        description = :description, 
+                        time = :time, 
+                        yield = :yield, 
+                        source = :source, 
+                        url = :url 
+                    WHERE id = :id
+                """.trimIndent())
                 .param("name", recipe.name)
                 .param("instruction", recipe.instruction)
                 .param("description", recipe.description)
@@ -81,6 +95,7 @@ class RecipeRepository(
                 .param("yield", recipe.yield)
                 .param("source", recipe.source)
                 .param("url", recipe.url)
+                .param("ID", recipe.id)
                 .update()
         } catch (e: Exception) {
 //            logger.error(e) { "Unable to delete person due to error with the query or connection" }
