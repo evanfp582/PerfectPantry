@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 import java.util.Optional
 
@@ -29,13 +30,14 @@ class RecipeRepository(
 
     fun createRecipe(recipe: NewRecipe): Recipe? {
         val keyHolder: KeyHolder = GeneratedKeyHolder()
+        val mapper = jacksonObjectMapper()
         val update =
             jdbcClient.sql("""
                 INSERT INTO RECIPE(NAME, INSTRUCTION, DESCRIPTION, TIME, YIELD, SOURCE, URL) 
                 VALUES (:name, :instruction, :description, :time, :yield, :source, :url)
             """.trimIndent())
                 .param("name", recipe.name)
-                .param("instruction", recipe.instruction)
+                .param("instructions", mapper.writeValueAsString(recipe.instructions))
                 .param("description", recipe.description)
                 .param("time", recipe.time)
                 .param("yield", recipe.yield)
@@ -76,6 +78,7 @@ class RecipeRepository(
     }
 
     fun updateRecipe(recipe: Recipe): Recipe {
+        val mapper = jacksonObjectMapper()
         val update = try {
             jdbcClient.sql("""
                     UPDATE RECIPE 
@@ -89,7 +92,7 @@ class RecipeRepository(
                     WHERE id = :id
                 """.trimIndent())
                 .param("name", recipe.name)
-                .param("instruction", recipe.instruction)
+                .param("instructions", mapper.writeValueAsString(recipe.instructions))
                 .param("description", recipe.description)
                 .param("time", recipe.time)
                 .param("yield", recipe.yield)
