@@ -27,7 +27,14 @@ class IngredientRepository(
             .query(IngredientRowMapper())
             .optional()
 
+    fun getIngredientByName(name: String): Optional<Ingredient> =
+        jdbcClient.sql("SELECT * FROM INGREDIENT WHERE NAME = ?")
+            .params(name)
+            .query(IngredientRowMapper())
+            .optional()
+
     fun createIngredient(ingredient: NewIngredient): Ingredient? {
+        // TODO Name should be unique
         val keyHolder: KeyHolder = GeneratedKeyHolder()
         val update =
             jdbcClient.sql("""

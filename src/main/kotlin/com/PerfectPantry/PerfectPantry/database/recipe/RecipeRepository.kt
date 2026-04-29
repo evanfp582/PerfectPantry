@@ -28,7 +28,7 @@ class RecipeRepository(
             .query(RecipeRowMapper())
             .optional()
 
-    fun createRecipe(recipe: NewRecipe): Recipe? {
+    fun createRecipe(recipe: NewRecipe): Recipe {
         val keyHolder: KeyHolder = GeneratedKeyHolder()
         val mapper = jacksonObjectMapper()
         val update =
