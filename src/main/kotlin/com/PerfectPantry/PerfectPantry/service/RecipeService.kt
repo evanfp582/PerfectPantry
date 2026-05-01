@@ -5,12 +5,11 @@ import com.PerfectPantry.PerfectPantry.database.recipe.RecipeRepository
 import com.PerfectPantry.PerfectPantry.database.recipeIngredient.RecipeIngredientRepository
 import com.PerfectPantry.PerfectPantry.database.recipeTag.RecipeTagRepository
 import com.PerfectPantry.PerfectPantry.database.tag.TagRepository
-import com.PerfectPantry.PerfectPantry.model.NewIngredient
-import com.PerfectPantry.PerfectPantry.model.NewRecipe
-import com.PerfectPantry.PerfectPantry.model.NewTag
+import com.PerfectPantry.PerfectPantry.model.CreateRecipeRequest
+
 import com.PerfectPantry.PerfectPantry.model.Recipe
+import com.PerfectPantry.PerfectPantry.model.RecipeIngredient
 import com.PerfectPantry.PerfectPantry.model.RecipeTag
-import com.PerfectPantry.PerfectPantry.model.Tag
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,27 +24,33 @@ class RecipeService (
 
     @Transactional
     fun createFullRecipe(
-        newRecipe: NewRecipe,
-        ingredients: List<NewIngredient>,
-        tags: List<NewTag>
+        createRecipeRequest: CreateRecipeRequest
     ): Recipe {
         // First, check if the recipe exists
         // If name and source are equal to something that already exists
 
         // If not, create the recipe
-        val recipe = recipeRepository.createRecipe(newRecipe)
+        val recipe = recipeRepository.createRecipe(createRecipeRequest.recipe)
 
         //Next, create recipes where needed, but regardless, I am getting IDs and linking
-        ingredients.forEach { ingredientInput ->
-            val ingredient = ingredientRepository.getIngredientByName(ingredientInput.name)
-                .orElse(ingredientRepository.createIngredient(ingredientInput))
-            recipeIngredientRepository.getRecipeIngredient(ingredient.id, recipe.id)
+        createRecipeRequest.ingredients.forEach { recipeIngredientInput ->
+            val ingredient = ingredientRepository.getIngredientByName(recipeIngredientInput.ingredient.name)
+                .orElse(ingredientRepository.createIngredient(recipeIngredientInput.ingredient))
+//            recipeIngredientRepository.getRecipeIngredient(ingredient.id, recipe.id)
+            recipeIngredientRepository.createRecipeIngredientById(
+                RecipeIngredient(
+                    ingredient.id,
+                    recipe.id,
+                    recipeIngredientInput.quantity,
+                    recipeIngredientInput.unit
+                )
+            )
 
         }
 
         //Next, create tags where needed, but regardless, I am getting IDs and linking
-        tags.forEach { tagInput ->
-            val tag = tagRepository.getTag(tagInput.name)
+        createRecipeRequest.tags.forEach { tagInput ->
+            val tag = tagRepository.getTag(tagInput)
                 .orElse(tagRepository.createTag(tagInput))
             recipeTagRepository.createRecipeTag(RecipeTag(recipe.id, tag.id))
 

@@ -38,12 +38,13 @@ class RecipeIngredientRepository(
         val keyHolder: KeyHolder = GeneratedKeyHolder()
         val update =
             jdbcClient.sql("""
-                INSERT INTO RecipeIngredient(RECIPE_ID, INGREDIENT_ID, QUANTITY) 
-                VALUES (:recipe_id, :ingredient_id, :quantity)
+                INSERT INTO recipe_ingredient(RECIPE_ID, INGREDIENT_ID, QUANTITY, UNIT) 
+                VALUES (:recipe_id, :ingredient_id, :quantity, :unit::measurements)
             """.trimIndent())
                 .param("ingredient_id", recipeIngredient.ingredientId)
                 .param("recipe_id", recipeIngredient.recipeId)
                 .param("quantity", recipeIngredient.quantity)
+                .param("unit", recipeIngredient.unit.name.lowercase())
                 .update(keyHolder)
 
         if (update == 1) {

@@ -23,9 +23,9 @@ class RecipeTagRepository(
     fun getRecipeTag(recipeId: Int, tagId: Int): Optional<RecipeTag> =
         jdbcClient.sql("""
             SELECT * FROM recipe_tag
-            WHERE ingredient_id = :ingredient_id AND tag_id = :tag_id
+            WHERE recipe_id = :recipe_id AND tag_id = :tag_id
         """.trimIndent())
-            .param("ingredient_id", recipeId)
+            .param("recipe_id", recipeId)
             .param("tag_id", tagId)
             .query(RecipeTagRowMapper())
             .optional()
@@ -54,10 +54,10 @@ class RecipeTagRepository(
         }
     }
 
-    fun deleteRecipeTag(ingredientId: Int, tagId: Int) {
+    fun deleteRecipeTag(recipeId: Int, tagId: Int) {
         val update = try {
-            jdbcClient.sql("DELETE FROM recipe_tag WHERE ingredient_id = :ingredient_id AND tag_id = :tag_id")
-                .param("ingredient_id", ingredientId)
+            jdbcClient.sql("DELETE FROM recipe_tag WHERE recipe_id = :recipe_id AND tag_id = :tag_id")
+                .param("recipe_id", recipeId)
                 .param("tag_id", tagId)
                 .update()
         } catch (e: Exception) {

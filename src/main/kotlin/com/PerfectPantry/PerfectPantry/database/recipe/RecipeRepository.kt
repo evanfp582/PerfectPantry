@@ -33,8 +33,8 @@ class RecipeRepository(
         val mapper = jacksonObjectMapper()
         val update =
             jdbcClient.sql("""
-                INSERT INTO RECIPE(NAME, INSTRUCTION, DESCRIPTION, TIME, YIELD, SOURCE, URL) 
-                VALUES (:name, :instruction, :description, :time, :yield, :source, :url)
+                INSERT INTO RECIPE(NAME, INSTRUCTIONS, DESCRIPTION, TIME, YIELD, SOURCE, URL) 
+                VALUES (:name, :instructions::jsonb, :description, :time, :yield, :source, :url)
             """.trimIndent())
                 .param("name", recipe.name)
                 .param("instructions", mapper.writeValueAsString(recipe.instructions))
@@ -83,7 +83,7 @@ class RecipeRepository(
             jdbcClient.sql("""
                     UPDATE RECIPE 
                     SET name = :name, 
-                        instruction = :instruction, 
+                        instructions = :instructions, 
                         description = :description, 
                         time = :time, 
                         yield = :yield, 

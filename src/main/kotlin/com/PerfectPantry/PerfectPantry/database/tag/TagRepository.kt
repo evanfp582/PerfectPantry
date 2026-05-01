@@ -37,7 +37,7 @@ class TagRepository(
             .query(TagRowMapper())
             .optional()
 
-    fun createTag(tag: NewTag): Tag? {
+    fun createTag(tag: String): Tag? {
         val keyHolder: KeyHolder = GeneratedKeyHolder()
         val mapper = jacksonObjectMapper()
         val update =
@@ -45,7 +45,7 @@ class TagRepository(
                 INSERT INTO TAG(NAME) 
                 VALUES (:name)
             """.trimIndent())
-                .param("name", tag.name)
+                .param("name", tag)
                 .update(keyHolder)
 
         if (update == 1) {

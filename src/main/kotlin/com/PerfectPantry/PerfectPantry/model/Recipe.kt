@@ -30,3 +30,9 @@ data class NewRecipe(
 data class Instructions(
     val steps: List<String>
 )
+
+data class CreateRecipeRequest(
+    val recipe: NewRecipe,
+    val ingredients: List<NewRecipeIngredient>,
+    val tags: List<String>
+)

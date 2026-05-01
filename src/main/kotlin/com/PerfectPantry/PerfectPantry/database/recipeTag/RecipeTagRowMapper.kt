@@ -7,8 +7,8 @@ import java.sql.ResultSet
 class RecipeTagRowMapper: RowMapper<RecipeTag> {
     override fun mapRow(rs: ResultSet, rowNum: Int): RecipeTag {
         return RecipeTag(
-            rs.getInt("recipeId"),
-            rs.getInt("tagId")
+            rs.getInt("recipe_id"),
+            rs.getInt("tag_id")
         )
     }
 }
