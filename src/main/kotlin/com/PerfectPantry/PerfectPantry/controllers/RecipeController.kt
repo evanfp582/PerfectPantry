@@ -52,7 +52,8 @@ class RecipeController(
 
     @DeleteMapping("/{id}")
     fun deleteRecipe(@PathVariable id: Int) {
-        recipeRepository.deleteRecipe(id)
+        print("Deleting Recipe")
+        recipeService.deleteFullRecipe(id)
     }
 
     @PutMapping

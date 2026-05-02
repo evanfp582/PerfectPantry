@@ -64,21 +64,18 @@ class TagRepository(
     }
 
     fun deleteTag(id: Int) {
-//        TODO delete tag and then delete all occurrences of it in recipe_tag
-//        val update = try {
-//            jdbcClient.sql("DELETE FROM RECIPE WHERE ID = ?")
-//                .params(id)
-//                .update()
-//        } catch (e: Exception) {
-////            logger.error(e) { "Unable to delete person due to error with the query or connection" }
-//            throw ResponseStatusException(HttpStatusCode.valueOf(500))
-//        }
-//        if (update == 1) {
-//            return
-//        } else {
-////            logger.error { "Could not find recipe with id $id" }
-//            throw ResponseStatusException(HttpStatusCode.valueOf(404))
-//        }
+        val update = try {
+            jdbcClient.sql("DELETE FROM TAG WHERE ID = ?")
+                .params(id)
+                .update()
+        } catch (e: Exception) {
+            throw ResponseStatusException(HttpStatusCode.valueOf(500))
+        }
+        if (update == 1) {
+            return
+        } else {
+            throw ResponseStatusException(HttpStatusCode.valueOf(404))
+        }
     }
 
     fun updateTag(tag: Tag): Tag {

@@ -60,4 +60,13 @@ class RecipeService (
 
     }
 
+    @Transactional
+    fun deleteFullRecipe(
+        recipeId: Int
+    ) {
+        recipeIngredientRepository.deleteRecipeIngredientByRecipe(recipeId)
+        recipeTagRepository.deleteRecipeTagByRecipe(recipeId)
+        recipeRepository.deleteRecipe(recipeId)
+    }
+
 }

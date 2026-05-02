@@ -66,9 +66,32 @@ class RecipeTagRepository(
         }
         if (update == 1) {
             return
-        } else {
-//            logger.error { "Could not find recipe tag with id $id" }
-            throw ResponseStatusException(HttpStatusCode.valueOf(404))
+        }
+    }
+
+    fun deleteRecipeTagByRecipe(recipeId: Int) {
+        val update = try {
+            jdbcClient.sql("DELETE FROM recipe_tag WHERE recipe_id = :recipe_id")
+                .param("recipe_id", recipeId)
+                .update()
+        } catch (e: Exception) {
+            throw ResponseStatusException(HttpStatusCode.valueOf(500))
+        }
+        if (update == 1) {
+            return
+        }
+    }
+
+    fun deleteRecipeTagByTag(tagId: Int) {
+        val update = try {
+            jdbcClient.sql("DELETE FROM recipe_tag WHERE tag_id = :tag_id")
+                .param("tag_id", tagId)
+                .update()
+        } catch (e: Exception) {
+            throw ResponseStatusException(HttpStatusCode.valueOf(500))
+        }
+        if (update == 1) {
+            return
         }
     }
 }
