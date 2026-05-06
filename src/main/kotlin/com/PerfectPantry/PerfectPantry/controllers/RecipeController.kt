@@ -27,6 +27,10 @@ class RecipeController(
     fun listRecipes(): ResponseEntity<Recipes> =
         ResponseEntity.ok(Recipes(recipeRepository.getRecipesFromDb()))
 
+    @GetMapping("/search/{search}")
+    fun searchRecipes(@PathVariable search: String): ResponseEntity<Recipes> =
+        ResponseEntity.ok(Recipes(recipeRepository.searchRecipe(search)))
+
     @GetMapping("/{id}")
     fun getRecipe(@PathVariable id: Int): ResponseEntity<Recipe> {
         val potentialRecipe = recipeRepository.getRecipe(id)

@@ -28,6 +28,29 @@ class RecipeRepository(
             .query(RecipeRowMapper())
             .optional()
 
+    fun searchRecipe(search: String): List<Recipe> =
+//        jdbcClient.sql("SELECT *, name <-> :search AS distance FROM recipe ORDER BY distance ASC")
+        // TODO I want to do something with the distance value rather than just an initial sorting
+        jdbcClient.sql("SELECT * FROM recipe ORDER BY name <-> :search ASC")
+            .params(search)
+            .query(RecipeRowMapper())
+            .list()
+
+    fun existingRecipe(name: String, source: String?): Optional<Recipe> {
+        return if (source.isNullOrBlank()) {
+            jdbcClient.sql("SELECT * FROM recipe WHERE name = :name LIMIT 1")
+                .param("name",name)
+                .query(RecipeRowMapper())
+                .optional()
+        } else {
+            jdbcClient.sql("SELECT * FROM recipe WHERE name = :name and source = :source LIMIT 1")
+                .param("name",name)
+                .param("source", source)
+                .query(RecipeRowMapper())
+                .optional()
+        }
+    }
+
     fun createRecipe(recipe: NewRecipe): Recipe {
         val keyHolder: KeyHolder = GeneratedKeyHolder()
         val mapper = jacksonObjectMapper()

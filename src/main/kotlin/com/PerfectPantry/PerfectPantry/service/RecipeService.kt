@@ -28,12 +28,18 @@ class RecipeService (
     ): Recipe {
         // First, check if the recipe exists
         // If name and source are equal to something that already exists
+        val existingRecipe = recipeRepository.existingRecipe(createRecipeRequest.recipe.name, createRecipeRequest.recipe.source)
+        if (existingRecipe.isPresent){
+            //TODO I probably want to return some kind of message with this saying like 'Did you mean this recipe'
+            return existingRecipe.get()
+        }
 
         // If not, create the recipe
         val recipe = recipeRepository.createRecipe(createRecipeRequest.recipe)
 
         //Next, create recipes where needed, but regardless, I am getting IDs and linking
         createRecipeRequest.ingredients.forEach { recipeIngredientInput ->
+            // TODO this does not work, I am getting repeat ingredients
             val ingredient = ingredientRepository.getIngredientByName(recipeIngredientInput.ingredient.name)
                 .orElse(ingredientRepository.createIngredient(recipeIngredientInput.ingredient))
 //            recipeIngredientRepository.getRecipeIngredient(ingredient.id, recipe.id)
@@ -50,6 +56,7 @@ class RecipeService (
 
         //Next, create tags where needed, but regardless, I am getting IDs and linking
         createRecipeRequest.tags.forEach { tagInput ->
+            // TODO this does not work, I am getting repeat tags
             val tag = tagRepository.getTag(tagInput)
                 .orElse(tagRepository.createTag(tagInput))
             recipeTagRepository.createRecipeTag(RecipeTag(recipe.id, tag.id))
@@ -57,7 +64,6 @@ class RecipeService (
         }
 
         return recipe
-
     }
 
     @Transactional
