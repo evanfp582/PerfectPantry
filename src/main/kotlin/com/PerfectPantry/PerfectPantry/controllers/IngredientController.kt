@@ -25,6 +25,15 @@ class IngredientController(
     fun listIngredients(): ResponseEntity<Ingredients> =
         ResponseEntity.ok(Ingredients(ingredientRepository.getIngredientsFromDb()))
 
+    @GetMapping("/search/{name}")
+    fun searchByName(@PathVariable name: String): ResponseEntity<Ingredient> {
+        val potentialIngredients = ingredientRepository.getIngredientByName(name)
+        return if (potentialIngredients.isPresent) {ResponseEntity.ok(potentialIngredients.get())}
+        else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
     @GetMapping("/{id}")
     fun getIngredient(@PathVariable id: Int): ResponseEntity<Ingredient> {
         val potentialIngredient = ingredientRepository.getIngredient(id)

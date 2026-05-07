@@ -33,7 +33,7 @@ class IngredientRepository(
             .query(IngredientRowMapper())
             .optional()
 
-    fun createIngredient(ingredient: NewIngredient): Ingredient? {
+    fun createIngredient(ingredient: NewIngredient): Ingredient {
         // TODO Name should be unique
         val keyHolder: KeyHolder = GeneratedKeyHolder()
         val update =

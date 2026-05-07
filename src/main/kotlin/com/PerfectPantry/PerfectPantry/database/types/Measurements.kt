@@ -17,7 +17,8 @@ enum class Measurements {
     SPRINKLE,
     PINCH,
     DROP,
-    SLICE;
+    SLICE,
+    CUBE;
 
     companion object {
         @JsonCreator

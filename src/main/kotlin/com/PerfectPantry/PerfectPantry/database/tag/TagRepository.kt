@@ -37,7 +37,7 @@ class TagRepository(
             .query(TagRowMapper())
             .optional()
 
-    fun createTag(tag: String): Tag? {
+    fun createTag(tag: String): Tag {
         val keyHolder: KeyHolder = GeneratedKeyHolder()
         val mapper = jacksonObjectMapper()
         val update =

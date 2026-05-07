@@ -6,12 +6,12 @@ import com.PerfectPantry.PerfectPantry.database.recipeIngredient.RecipeIngredien
 import com.PerfectPantry.PerfectPantry.database.recipeTag.RecipeTagRepository
 import com.PerfectPantry.PerfectPantry.database.tag.TagRepository
 import com.PerfectPantry.PerfectPantry.model.CreateRecipeRequest
-
 import com.PerfectPantry.PerfectPantry.model.Recipe
 import com.PerfectPantry.PerfectPantry.model.RecipeIngredient
 import com.PerfectPantry.PerfectPantry.model.RecipeTag
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class RecipeService (
@@ -39,10 +39,8 @@ class RecipeService (
 
         //Next, create recipes where needed, but regardless, I am getting IDs and linking
         createRecipeRequest.ingredients.forEach { recipeIngredientInput ->
-            // TODO this does not work, I am getting repeat ingredients
-            val ingredient = ingredientRepository.getIngredientByName(recipeIngredientInput.ingredient.name)
-                .orElse(ingredientRepository.createIngredient(recipeIngredientInput.ingredient))
-//            recipeIngredientRepository.getRecipeIngredient(ingredient.id, recipe.id)
+            val ingredient = ingredientRepository.getIngredientByName(recipeIngredientInput.ingredient.name).getOrNull()
+                ?: ingredientRepository.createIngredient(recipeIngredientInput.ingredient)
             recipeIngredientRepository.createRecipeIngredientById(
                 RecipeIngredient(
                     ingredient.id,
@@ -56,11 +54,9 @@ class RecipeService (
 
         //Next, create tags where needed, but regardless, I am getting IDs and linking
         createRecipeRequest.tags.forEach { tagInput ->
-            // TODO this does not work, I am getting repeat tags
-            val tag = tagRepository.getTag(tagInput)
-                .orElse(tagRepository.createTag(tagInput))
+            val tag = tagRepository.getTag(tagInput).getOrNull()
+                ?: (tagRepository.createTag(tagInput))
             recipeTagRepository.createRecipeTag(RecipeTag(recipe.id, tag.id))
-
         }
 
         return recipe
