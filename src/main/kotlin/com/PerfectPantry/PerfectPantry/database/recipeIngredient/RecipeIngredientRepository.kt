@@ -1,9 +1,5 @@
 package com.PerfectPantry.PerfectPantry.database.recipeIngredient
 
-import com.PerfectPantry.PerfectPantry.database.ingredient.IngredientRowMapper
-import com.PerfectPantry.PerfectPantry.database.recipe.RecipeRowMapper
-import com.PerfectPantry.PerfectPantry.model.NewRecipe
-import com.PerfectPantry.PerfectPantry.model.Recipe
 import com.PerfectPantry.PerfectPantry.model.RecipeIngredient
 import org.springframework.http.HttpStatusCode
 import org.springframework.jdbc.core.simple.JdbcClient

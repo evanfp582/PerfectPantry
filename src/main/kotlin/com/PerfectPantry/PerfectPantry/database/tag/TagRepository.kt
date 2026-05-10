@@ -11,7 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
-import tools.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
 import java.util.Optional
 
