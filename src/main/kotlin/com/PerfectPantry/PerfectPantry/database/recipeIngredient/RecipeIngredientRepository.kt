@@ -30,14 +30,14 @@ class RecipeIngredientRepository(
             .query(RecipeIngredientRowMapper())
             .optional()
 
-    fun getRecipeIngredientsByRecipe(recipeId: Int): Optional<RecipeIngredient> =
+    fun getRecipeIngredientsByRecipe(recipeId: Int): List<RecipeIngredient> =
         jdbcClient.sql("""
             SELECT * FROM recipe_ingredient
             WHERE recipe_id = :recipe_id
         """.trimIndent())
             .param("recipe_id", recipeId)
             .query(RecipeIngredientRowMapper())
-            .optional()
+            .list()
 
     fun createRecipeIngredientById(recipeIngredient: RecipeIngredient): RecipeIngredient? {
         val keyHolder: KeyHolder = GeneratedKeyHolder()

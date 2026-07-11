@@ -2,6 +2,7 @@ package com.PerfectPantry.PerfectPantry.controllers
 
 import com.PerfectPantry.PerfectPantry.database.recipe.RecipeRepository
 import com.PerfectPantry.PerfectPantry.model.CreateRecipeRequest
+import com.PerfectPantry.PerfectPantry.model.FullRecipe
 import com.PerfectPantry.PerfectPantry.model.NewRecipe
 import com.PerfectPantry.PerfectPantry.model.Recipe
 import com.PerfectPantry.PerfectPantry.model.Recipes
@@ -52,6 +53,12 @@ class RecipeController(
     ): ResponseEntity<Recipe> {
         val createdRecipe = recipeService.createFullRecipe(request)
         return ResponseEntity.ok(createdRecipe)
+    }
+
+    @GetMapping("/full/{id}")
+    fun getFullRecipe(@PathVariable id: Int): ResponseEntity<FullRecipe> {
+        val fullRecipe = recipeService.getFullRecipe(id)
+        return ResponseEntity.ok(fullRecipe)
     }
 
     @DeleteMapping("/{id}")

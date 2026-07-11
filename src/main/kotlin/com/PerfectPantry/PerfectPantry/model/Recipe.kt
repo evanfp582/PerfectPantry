@@ -17,6 +17,18 @@ data class Recipe(
     val url: String?
 )
 
+data class FullRecipe (
+    val id: Int,
+    val name: String,
+    val instructions: Instructions,
+    val ingredients: List<RecipeIngredient>,
+    val description: String?,
+    val time: String?,
+    val yield: Double?,
+    val source: String?,
+    val url: String?
+)
+
 data class NewRecipe(
     val name: String,
     val instructions: Instructions,

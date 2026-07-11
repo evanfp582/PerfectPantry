@@ -6,6 +6,7 @@ import com.PerfectPantry.PerfectPantry.database.recipeIngredient.RecipeIngredien
 import com.PerfectPantry.PerfectPantry.database.recipeTag.RecipeTagRepository
 import com.PerfectPantry.PerfectPantry.database.tag.TagRepository
 import com.PerfectPantry.PerfectPantry.model.CreateRecipeRequest
+import com.PerfectPantry.PerfectPantry.model.FullRecipe
 import com.PerfectPantry.PerfectPantry.model.Recipe
 import com.PerfectPantry.PerfectPantry.model.RecipeIngredient
 import com.PerfectPantry.PerfectPantry.model.RecipeTag
@@ -69,6 +70,25 @@ class RecipeService (
         recipeIngredientRepository.deleteRecipeIngredientByRecipe(recipeId)
         recipeTagRepository.deleteRecipeTagByRecipe(recipeId)
         recipeRepository.deleteRecipe(recipeId)
+    }
+
+    @Transactional
+    fun getFullRecipe(
+        recipeId: Int
+    ): FullRecipe {
+        val recipe = recipeRepository.getRecipe(recipeId).get()
+        val recipeIngredients = recipeIngredientRepository.getRecipeIngredientsByRecipe(recipeId)
+        return FullRecipe(
+            id = recipeId,
+            name = recipe.name,
+            instructions = recipe.instructions,
+            ingredients = recipeIngredients,
+            description = recipe.description,
+            time = recipe.time,
+            yield = recipe.yield,
+            source = recipe.source,
+            url = recipe.url
+        )
     }
 
 }
