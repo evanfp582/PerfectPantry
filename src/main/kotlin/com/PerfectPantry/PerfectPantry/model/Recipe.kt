@@ -21,7 +21,7 @@ data class FullRecipe (
     val id: Int,
     val name: String,
     val instructions: Instructions,
-    val ingredients: List<RecipeIngredient>,
+    val ingredients: List<Ingredient>,
     val description: String?,
     val time: String?,
     val yield: Double?,

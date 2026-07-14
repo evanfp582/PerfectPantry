@@ -38,7 +38,7 @@ class RecipeService (
         // If not, create the recipe
         val recipe = recipeRepository.createRecipe(createRecipeRequest.recipe)
 
-        //Next, create recipes where needed, but regardless, I am getting IDs and linking
+        //Next, create ingredients where needed, but regardless, I am getting IDs and linking
         createRecipeRequest.ingredients.forEach { recipeIngredientInput ->
             val ingredient = ingredientRepository.getIngredientByName(recipeIngredientInput.ingredient.name).getOrNull()
                 ?: ingredientRepository.createIngredient(recipeIngredientInput.ingredient)
@@ -77,7 +77,7 @@ class RecipeService (
         recipeId: Int
     ): FullRecipe {
         val recipe = recipeRepository.getRecipe(recipeId).get()
-        val recipeIngredients = recipeIngredientRepository.getRecipeIngredientsByRecipe(recipeId)
+        val recipeIngredients = ingredientRepository.getIngredientByRecipe(recipeId)
         return FullRecipe(
             id = recipeId,
             name = recipe.name,
