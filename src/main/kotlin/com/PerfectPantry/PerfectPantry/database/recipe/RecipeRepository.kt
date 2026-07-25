@@ -1,5 +1,7 @@
 package com.PerfectPantry.PerfectPantry.database.recipe
 
+import com.PerfectPantry.PerfectPantry.database.ingredient.IngredientRowMapper
+import com.PerfectPantry.PerfectPantry.model.Ingredient
 import com.PerfectPantry.PerfectPantry.model.NewRecipe
 import com.PerfectPantry.PerfectPantry.model.Recipe
 import org.springframework.http.HttpStatusCode
@@ -140,4 +142,14 @@ class RecipeRepository(
             throw ResponseStatusException(HttpStatusCode.valueOf(404))
         }
     }
+
+    fun getRecipesByIngredient(ingredientId: Int): List<Recipe> =
+        jdbcClient.sql("""
+            SELECT r.id, r.name, r.instructions, r.description, r.time, r.yield, r.source, r.url FROM recipe r
+            JOIN recipe_ingredient ri on (ri.recipe_id = r.id) 
+            WHERE ri.ingredient_id = :ingredient_id
+        """.trimIndent())
+            .param("ingredient_id", ingredientId)
+            .query(RecipeRowMapper())
+            .list()
 }

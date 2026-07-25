@@ -7,11 +7,13 @@ import com.PerfectPantry.PerfectPantry.database.recipeTag.RecipeTagRepository
 import com.PerfectPantry.PerfectPantry.database.tag.TagRepository
 import com.PerfectPantry.PerfectPantry.model.CreateRecipeRequest
 import com.PerfectPantry.PerfectPantry.model.FullRecipe
+import com.PerfectPantry.PerfectPantry.model.Ingredient
 import com.PerfectPantry.PerfectPantry.model.Recipe
 import com.PerfectPantry.PerfectPantry.model.RecipeIngredient
 import com.PerfectPantry.PerfectPantry.model.RecipeTag
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.jvm.optionals.getOrElse
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -73,7 +75,7 @@ class RecipeService (
     }
 
     @Transactional
-    fun getFullRecipe(
+    fun getFullRecipeById(
         recipeId: Int
     ): FullRecipe {
         val recipe = recipeRepository.getRecipe(recipeId).get()
@@ -89,6 +91,28 @@ class RecipeService (
             source = recipe.source,
             url = recipe.url
         )
+    }
+
+    @Transactional
+    fun getFullRecipesByIngredient(
+        ingredientName: String
+    ): List<FullRecipe> {
+        val ingredient: Ingredient = ingredientRepository.getIngredientByName(ingredientName).getOrElse { error("Ingredient $ingredientName not found") }
+        val recipes = recipeRepository.getRecipesByIngredient(ingredient.id)
+        val fullRecipes: List<FullRecipe> = recipes.map { recipe ->
+            FullRecipe(
+                id = recipe.id,
+                name = recipe.name,
+                instructions = recipe.instructions,
+                ingredients = ingredientRepository.getIngredientByRecipe(recipe.id),
+                description = recipe.description,
+                time = recipe.time,
+                yield = recipe.yield,
+                source = recipe.source,
+                url = recipe.url
+            )
+        }
+        return fullRecipes
     }
 
 }

@@ -57,8 +57,14 @@ class RecipeController(
 
     @GetMapping("/full/{id}")
     fun getFullRecipe(@PathVariable id: Int): ResponseEntity<FullRecipe> {
-        val fullRecipe = recipeService.getFullRecipe(id)
+        val fullRecipe = recipeService.getFullRecipeById(id)
         return ResponseEntity.ok(fullRecipe)
+    }
+
+    @GetMapping("/full/ingredient/{name}")
+    fun getFullRecipesByIngredientName(@PathVariable name: String): ResponseEntity<List<FullRecipe>> {
+        val fullRecipes: List<FullRecipe> = recipeService.getFullRecipesByIngredient(name)
+        return ResponseEntity.ok(fullRecipes)
     }
 
     @DeleteMapping("/{id}")
