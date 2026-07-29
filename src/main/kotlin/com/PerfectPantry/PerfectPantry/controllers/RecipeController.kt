@@ -41,6 +41,12 @@ class RecipeController(
         }
     }
 
+    @GetMapping("/user/{id}")
+    fun getRecipesByUserId(@PathVariable id: Int): ResponseEntity<List<Recipe>> {
+        val recipes: List<Recipe> = recipeRepository.getRecipesByUser(id)
+        return ResponseEntity.ok(recipes)
+    }
+
     @PostMapping("/only")
     fun createRecipe(@RequestBody recipe: NewRecipe): ResponseEntity<Recipe> {
         val createdRecipe = recipeRepository.createRecipe(recipe)

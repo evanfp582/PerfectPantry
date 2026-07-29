@@ -31,7 +31,7 @@ class RecipeRepository(
     fun searchRecipe(search: String): List<Recipe> =
 //        jdbcClient.sql("SELECT *, name <-> :search AS distance FROM recipe ORDER BY distance ASC")
         // TODO I want to do something with the distance value rather than just an initial sorting
-        jdbcClient.sql("SELECT * FROM recipe ORDER BY name <-> :search ASC")
+        jdbcClient.sql("SELECT * FROM recipe ORDER BY name <-> ? ASC")
             .params(search)
             .query(RecipeRowMapper())
             .list()
@@ -148,6 +148,16 @@ class RecipeRepository(
             WHERE ri.ingredient_id = :ingredient_id
         """.trimIndent())
             .param("ingredient_id", ingredientId)
+            .query(RecipeRowMapper())
+            .list()
+
+    fun getRecipesByUser(userId: Int): List<Recipe> =
+        jdbcClient.sql("""
+            SELECT r.id, r.name, r.instructions, r.description, r.time, r.yield, r.source, r.url FROM recipe r
+            JOIN usr_recipe ur on (ur.recipe_id = r.id) 
+            WHERE ur.usr_id = :usr_id
+        """.trimIndent())
+            .param("usr_id", userId)
             .query(RecipeRowMapper())
             .list()
 }
