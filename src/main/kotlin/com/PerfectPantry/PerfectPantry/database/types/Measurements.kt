@@ -18,6 +18,7 @@ enum class Measurements {
     PINCH,
     DROP,
     SLICE,
+    UNIT,
     CUBE;
 
     companion object {
