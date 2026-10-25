@@ -43,6 +43,11 @@ CREATE TABLE tag (
     name VARCHAR NOT NULL
 );
 
+CREATE TABLE usr (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    username VARCHAR NOT NULL
+);
+
 CREATE TABLE recipe_ingredient (
     ingredient_id INTEGER NOT NULL,
     recipe_id INTEGER NOT NULL,
