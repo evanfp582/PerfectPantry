@@ -5,6 +5,7 @@ import com.PerfectPantry.PerfectPantry.model.NewUser
 import com.PerfectPantry.PerfectPantry.model.User
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
@@ -15,7 +16,6 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.util.*
-import kotlin.test.Ignore
 import kotlin.test.assertEquals
 
 @SpringBootTest
@@ -66,9 +66,15 @@ class UserRepositoryTests {
         assertEquals(Optional.empty<User>(), searchResult, "Search of 'evil_person_123' resulted in $searchResult, it was expected to be Optional.empty")
     }
 
-    @Ignore("not implemented yet")
-    @Test fun `get user by id`() {
-        // TODO
+    @Test fun `get user by present id`() {
+        val searchResult = userRepository.getUserById(2)
+        val expectedUser = User(2, "spike8pizza")
+        assertEquals(expectedUser, searchResult.get(), "Search of  ID '2' resulted in $searchResult, it was expected to be User(2, 'spike8pizza')")
+    }
+
+    @Test fun `get user by absent id`() {
+        val searchResult = userRepository.getUserById(80)
+        assertEquals(Optional.empty<User>(), searchResult, "Search of  ID '2' resulted in $searchResult, it was expected to be Optional.empty")
     }
 
     @Test
@@ -78,9 +84,10 @@ class UserRepositoryTests {
         assertNotNull(returnedUser)
     }
 
-    @Ignore("not implemented yet")
     @Test fun `create user with duplicate username`() {
-        // TODO
+        val user = NewUser("ethanfp582")
+        assertThrows<Throwable> { userRepository.createUser(user) }
+
     }
 
 }
