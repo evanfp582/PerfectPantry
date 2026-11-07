@@ -3,6 +3,7 @@ package com.PerfectPantry.PerfectPantry.database.user
 
 import com.PerfectPantry.PerfectPantry.model.NewUser
 import com.PerfectPantry.PerfectPantry.model.User
+import jakarta.transaction.Transactional
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
@@ -20,6 +21,7 @@ import kotlin.test.assertEquals
 
 @SpringBootTest
 @Testcontainers
+@Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = ["/sql/users.sql"], executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class UserRepositoryTests {
@@ -29,13 +31,6 @@ class UserRepositoryTests {
         @ServiceConnection
         @JvmStatic
         val postgres = PostgreSQLContainer<Nothing>("postgres:18")
-
-        @JvmStatic
-        fun registerDatabaseProperties(registry: DynamicPropertyRegistry) {
-            registry.add("spring.datasource.url", postgres::getJdbcUrl)
-            registry.add("spring.datasource.username", postgres::getUsername)
-            registry.add("spring.datasource.password", postgres::getPassword)
-        }
     }
 
     @Autowired
@@ -74,7 +69,7 @@ class UserRepositoryTests {
 
     @Test fun `get user by absent id`() {
         val searchResult = userRepository.getUserById(80)
-        assertEquals(Optional.empty<User>(), searchResult, "Search of  ID '2' resulted in $searchResult, it was expected to be Optional.empty")
+        assertEquals(Optional.empty<User>(), searchResult, "Search of  ID '80' resulted in $searchResult, it was expected to be Optional.empty")
     }
 
     @Test

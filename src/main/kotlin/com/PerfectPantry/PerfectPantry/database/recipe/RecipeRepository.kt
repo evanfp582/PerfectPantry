@@ -31,8 +31,9 @@ class RecipeRepository(
     fun searchRecipe(search: String): List<Recipe> =
 //        jdbcClient.sql("SELECT *, name <-> :search AS distance FROM recipe ORDER BY distance ASC")
         // TODO I want to do something with the distance value rather than just an initial sorting
-        jdbcClient.sql("SELECT * FROM recipe ORDER BY name <-> ? ASC")
-            .params(search)
+//        jdbcClient.sql("SELECT * FROM recipe ORDER BY name <-> ? ASC")
+        jdbcClient.sql("SELECT * FROM recipe WHERE name % ? ORDER BY SIMILARITY(name, ?) DESC")
+            .params(search, search)
             .query(RecipeRowMapper())
             .list()
 
@@ -90,7 +91,7 @@ class RecipeRepository(
                 .update()
         } catch (e: Exception) {
 //            logger.error(e) { "Unable to delete person due to error with the query or connection" }
-            throw ResponseStatusException(HttpStatusCode.valueOf(500))
+            throw ResponseStatusException(HttpStatusCode.valueOf(500), e.toString())
         }
         if (update == 1) {
             return
@@ -106,13 +107,13 @@ class RecipeRepository(
             jdbcClient.sql("""
                     UPDATE RECIPE 
                     SET name = :name, 
-                        instructions = :instructions, 
+                        instructions = :instructions::jsonb, 
                         description = :description, 
                         time = :time, 
                         yield = :yield, 
                         source = :source, 
                         url = :url 
-                    WHERE id = :id
+                    WHERE id = :ID
                 """.trimIndent())
                 .param("name", recipe.name)
                 .param("instructions", mapper.writeValueAsString(recipe.instructions))
@@ -125,7 +126,7 @@ class RecipeRepository(
                 .update()
         } catch (e: Exception) {
 //            logger.error(e) { "Unable to delete person due to error with the query or connection" }
-            throw ResponseStatusException(HttpStatusCode.valueOf(500))
+            throw ResponseStatusException(HttpStatusCode.valueOf(500), e.toString())
         }
         if (update == 1) {
             val personFromDb = getRecipe(recipe.id)
