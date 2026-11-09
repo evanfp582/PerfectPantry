@@ -48,6 +48,24 @@ CREATE TABLE usr (
     username VARCHAR NOT NULL UNIQUE
 );
 
+CREATE TABLE usr_recipe (
+    recipe_id INTEGER NOT NULL,
+    usr_id INTEGER NOT NULL,
+    username VARCHAR,
+
+    CONSTRAINT usr_recipe_pkey
+        PRIMARY KEY (recipe_id, usr_id),
+
+    CONSTRAINT fk_usr_recipe_usr
+        FOREIGN KEY (usr_id)
+        REFERENCES usr(id),
+
+    CONSTRAINT fk_usr_recipe_recipe
+        FOREIGN KEY (recipe_id)
+        REFERENCES recipe(id)
+
+);
+
 CREATE TABLE recipe_ingredient (
     ingredient_id INTEGER NOT NULL,
     recipe_id INTEGER NOT NULL,
